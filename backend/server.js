@@ -7,12 +7,11 @@ const userRoutes = require("./routes/UserRoutes");
 
 const app = express();
 
-// Database initialization
+
 connectDB();
 
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
 app.use(express.json());
 app.use(cors({ 
     origin: process.env.FRONTEND_URL || "http://localhost:5173", 
@@ -21,10 +20,9 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true })); 
 
 
-// Route Middlewares
 app.use("/user", userRoutes);
 
-// Base route
+
 app.get("/", (req, res) => {
     res.send("API WORKING");
 });

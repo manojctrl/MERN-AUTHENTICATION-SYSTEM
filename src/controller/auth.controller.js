@@ -38,6 +38,7 @@ export const register = async (req, res) => {
             user: {
                 username: newUser.username,
                 email: newUser.email,
+                password: hashedPassword
             },
             token
         });
@@ -53,7 +54,7 @@ export const register = async (req, res) => {
 };
 
 
-export const getme = () => {
+export const getme = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(" ")[1]
         if(!token){
@@ -62,10 +63,28 @@ export const getme = () => {
             })
         }
 
-        const decoded = jwt.verify(token, config.JWT_SECRET)
+        const decoded = jwt.verify(token, config.JWT_SECRET);
+        const user = await userModel.findById(decoded.id);
+
+        res.status(200).json({
+            success: true,
+            message: "user fetched successfully",
+            user: {
+                username: user.username,
+                email: user.email,
+            }
+
+
+        })
+
         
         console.log(decoded)
     } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        })
         
     }
 
